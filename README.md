@@ -1,2 +1,12 @@
+![GWAS by GLM](linear_regression.png)
+
 # CROPS545_HW4_GLM_GWAS
-Statistical Genomics, Homework 4, an R package that performs GWAS by GLM, includes both covariate, PCA, and PCA cluster effects
+The GWAS_by_GLM package performs a genome wide association study using the generalized linear model by incorporating fixed effects such as PCA, clustered PCA, or user defined covariates. Furthermore, useful graphical outputs are generated to assist the user with data interpretation.
+
+## Instalation
+
+## Examples
+
+
+## Demonstration of Power vs. FDR under a set of simulated conditions
+
