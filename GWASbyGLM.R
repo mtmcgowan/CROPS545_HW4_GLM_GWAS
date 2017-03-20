@@ -1,0 +1,58 @@
+
+GWASbyGLM<-function(mdpN, mdpPheno, mdpCov, option="cov"){#mdpN=mdp_Numeric.txt; mdpPheno=CROP545_Phenotype.txt; mdpCov=CROP545_Covariates.txt; options can be "cov", "pca", or "tbd" (tbd should be changed for whatever the clustering is going to be called)
+	if(option="cov"){#this if-else if-else structure directs to the correct process depending on the option selected
+		########Function w/ only covariates###########
+		P<-c()#empty p-value vector
+		m<-ncol(mdpN)
+		for(i in 1:m){
+			x<-as.matrix(mdpN)[,i]
+			if(max(x)==min(x)){
+				p=1
+			}
+			else{
+				lmPhfull<-lm(as.matrix(mdpPheno) ~ x + as.matrix(mdpCov))#linear model for SNP and covariate
+				lmPhnull<-lm(as.matrix(mdpPheno) ~ x) #linear model for SNP
+				lmPh<-step(null, scope=list(lower=null, upper=full), direction="both", criterion="BIC", k=log(length(x))#this selects the best model in stepwise fashion
+				p=coef(summary(lmPh))[2,4]#retrieves p-value for the SNP
+			}
+			P[i]<-p#adds the most recent SNP's p-value to the p-value vector
+		}
+		}else if(option="pca"){
+		#########Function w/ covariates and pca ##########
+
+		pcaSNP<-princomp(t(mdpN))#runs pca for SNPs
+
+		a<-pcaSNP$sdev^2/sum(pcaSNP$sdev^2)#finds the proportion of the variance explained by each PC
+		n<-length(a[which(a>0.01)])#finds the number of PC's that explain at least 1% of the variance
+
+		includePCA<-c()
+		for(i in 1:n){
+			cr<-cor(cbind(as.matrix(mdpCov), as.matrix(pcaSNP$loadings)[,1]))
+			if(max(cr[3,1:2])<0.5){
+				includePCA<-c(includePCA, i)#this whole thing selects the PC's that are not correlated to the covariates out of the set of PCs that explain at least 1% of the variace
+			}
+		}
+
+		P<-c()
+		m<-ncol(mdpN)
+		for(i in 1:m){#same idea as the other run of GLM, but now we can exclude the PC's if they do not contribute to the model
+			x<-as.matrix(mdpN)[,i]
+			if(max(x)==min(x)){
+				p=1
+			}
+			else{
+				lmPhfull<-lm(as.matrix(mdpPheno) ~ x + as.matrix(mdpCov) + as.matrix(pcaSNP$loadings)[,includePCA])
+				lmPhnull<-lm(as.matrix(mdpPheno) ~ x)
+				lmPh<-step(null, scope=list(lower=null, upper=full), direction="both", criterion="BIC", k=log(length(x))
+				p=coef(summary(lmPh))[2,4]
+			}
+			P[i]<-p
+		}
+	}else if(option="tbd"){
+		##############Function w/ clusters?############
+	}else{
+		##############If no valid option is given############
+		stop("option not recognized")
+	}
+	return(P)
+}
