@@ -1,6 +1,6 @@
 
 GWASbyGLM<-function(mdpN, mdpPheno, mdpCov, option="cov"){#mdpN=mdp_Numeric.txt; mdpPheno=CROP545_Phenotype.txt; mdpCov=CROP545_Covariates.txt; options can be "cov", "pca", or "tbd" (tbd should be changed for whatever the clustering is going to be called)
-	if(option="cov"){#this if-else if-else structure directs to the correct process depending on the option selected
+	if(option=="cov"){#this if-else if-else structure directs to the correct process depending on the option selected
 		########Function w/ only covariates###########
 		P<-c()#empty p-value vector
 		m<-ncol(mdpN)
@@ -12,12 +12,12 @@ GWASbyGLM<-function(mdpN, mdpPheno, mdpCov, option="cov"){#mdpN=mdp_Numeric.txt;
 			else{
 				lmPhfull<-lm(as.matrix(mdpPheno) ~ x + as.matrix(mdpCov))#linear model for SNP and covariate
 				lmPhnull<-lm(as.matrix(mdpPheno) ~ x) #linear model for SNP
-				lmPh<-step(null, scope=list(lower=null, upper=full), direction="both", criterion="BIC", k=log(length(x))#this selects the best model in stepwise fashion
+				lmPh<-step(lmPhnull, scope=list(lower=lmPhnull, upper=lmPhfull), direction="both", criterion="BIC", k=log(length(x)), trace=0)#this selects the best model in stepwise fashion
 				p=coef(summary(lmPh))[2,4]#retrieves p-value for the SNP
 			}
 			P[i]<-p#adds the most recent SNP's p-value to the p-value vector
 		}
-		}else if(option="pca"){
+		}else if(option=="pca"){
 		#########Function w/ covariates and pca ##########
 
 		pcaSNP<-princomp(t(mdpN))#runs pca for SNPs
@@ -43,12 +43,12 @@ GWASbyGLM<-function(mdpN, mdpPheno, mdpCov, option="cov"){#mdpN=mdp_Numeric.txt;
 			else{
 				lmPhfull<-lm(as.matrix(mdpPheno) ~ x + as.matrix(mdpCov) + as.matrix(pcaSNP$loadings)[,includePCA])
 				lmPhnull<-lm(as.matrix(mdpPheno) ~ x)
-				lmPh<-step(null, scope=list(lower=null, upper=full), direction="both", criterion="BIC", k=log(length(x))
+				lmPh<-step(lmPhnull, scope=list(lower=lmPhnull, upper=lmPhfull), direction="both", criterion="BIC", k=log(length(x)), trace=0)
 				p=coef(summary(lmPh))[2,4]
 			}
 			P[i]<-p
 		}
-	}else if(option="tbd"){
+	}else if(option=="tbd"){
 		##############Function w/ clusters?############
 	}else{
 		##############If no valid option is given############
