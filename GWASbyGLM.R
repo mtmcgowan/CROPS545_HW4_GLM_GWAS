@@ -27,7 +27,7 @@ GWASbyGLM<-function(mdpN, mdpPheno, mdpCov, option="cov"){#mdpN=mdp_Numeric.txt;
 
 		includePCA<-c()
 		for(i in 1:n){
-			cr<-cor(cbind(as.matrix(mdpCov), as.matrix(pcaSNP$loadings)[,1]))
+			cr<-cor(cbind(as.matrix(mdpCov), as.matrix(pcaSNP$loadings)[,i]))
 			if(max(cr[3,1:2])<0.5){
 				includePCA<-c(includePCA, i)#this whole thing selects the PC's that are not correlated to the covariates out of the set of PCs that explain at least 1% of the variace
 			}
