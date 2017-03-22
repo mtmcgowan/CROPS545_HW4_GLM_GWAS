@@ -10,7 +10,7 @@
 #'
 #' @examples
 #' # Reading example data from the Github repository
-#' mdpN <-read.csv(text=getURL("https://raw.githubusercontent.com/mtmcgowan/CROPS545_HW4_GLM_GWAS/master/example_mdpCov"), header=T, sep = " ")
+#' mdpN <-read.csv(text=getURL("https://raw.githubusercontent.com/mtmcgowan/CROPS545_HW4_GLM_GWAS/master/example_mdpN"), header=T, sep = " ")
 #' mdpPheno <-read.csv(text=getURL("https://raw.githubusercontent.com/mtmcgowan/CROPS545_HW4_GLM_GWAS/master/example_mdpPheno"), header=T, sep = " ")
 #' mdpCov <-read.csv(text=getURL("https://raw.githubusercontent.com/mtmcgowan/CROPS545_HW4_GLM_GWAS/master/example_mdpCov"), header=T, sep = " ")
 #'
