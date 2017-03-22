@@ -16,6 +16,3 @@ help(GWASbyGLM)
 
 To learn how to use the plot_manhattan function, type this command into yoru R terminal:
 help(plot_manhattan)
-
-## Demonstration of Power vs. FDR under a set of simulated conditions
-
