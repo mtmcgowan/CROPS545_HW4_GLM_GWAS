@@ -1,6 +1,7 @@
 #' GWASbyGLM
 #'
-#' This function performs a genome-wide-association study using the generalized linear model paradigm. Users have the option to include their own covariates, but can also perform principle component analysis. If so, the 'princomp' function is applied to the genotype matrix and components that explain more than 1% of the variance are included as long as they are not also correlated with user provided covariates.
+#' This function performs a genome-wide-association study using the generalized linear model paradigm. Users have the option to include their own covariates, but can also perform principle component analysis.
+#' If so, the 'princomp' function is applied to the genotype matrix and components that explain more than 1% of the variance are included as long as they are not also correlated with user provided covariates.
 #'
 #' @param mdpN an input numeric genotype matrix coded as c(0,1,2). Rows are samples, columns are markers.
 #' @param mdpPheno an input phenotype matrix. Rows are samples, columns are traits.
