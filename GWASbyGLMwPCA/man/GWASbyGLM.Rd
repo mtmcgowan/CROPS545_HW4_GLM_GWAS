@@ -18,7 +18,7 @@ A vector of p-values corresponding to each marker.
 }
 \description{
 This function performs a genome-wide-association study using the generalized linear model paradigm. Users have the option to include their own covariates, but can also perform principle component analysis.
-If so, the 'princomp' function is applied to the genotype matrix and components that explain more than 1% of the variance are included as long as they are not also correlated with user provided covariates.
+If so, the 'princomp' function is applied to the genotype matrix and components that explain more than 1 percent of the variance are included as long as they are not also correlated with user provided covariates.
 }
 \examples{
 # Reading example data from the Github repository
