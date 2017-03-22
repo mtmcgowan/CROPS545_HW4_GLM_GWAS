@@ -147,17 +147,17 @@ statRep_glm=function(nrep,GM){
   })
 }
 
-statRep_cor10=statRep_cor(nrep=10,GM=myGM) #repeat 10 times
-statRep_glm10=statRep_glm(nrep=10,GM=myGM) #repeat 10 times
+statRep_cor5=statRep_cor(nrep=5,GM=myGM) #repeat 5 times
+statRep_glm5=statRep_glm(nrep=5,GM=myGM) #repeat 5 times,10 times take a long time
 
 ###GLM vs COR in terms of FDR and Power, Type1 error and power
 par(mfrow=c(1,2),mar = c(5,2,5,2))
-plot(statRep_glm10[[3]][,4],statRep_glm10[[2]],type="b",col="red",xlab="FDR",ylab="Power")
-lines(statRep_cor10[[3]][,4],statRep_cor10[[2]],type="b",col="blue")
+plot(statRep_glm5[[3]][,4],statRep_glm5[[2]],type="b",col="red",xlab="FDR",ylab="Power")
+lines(statRep_cor5[[3]][,4],statRep_cor5[[2]],type="b",col="blue")
 legend("topleft", c("GLM", "COR"), col=c("red", "blue"), lty=1, pch=c(1, 2), cex=0.8, bty="n")
 
-plot(statRep_glm10[[4]][,4],statRep_glm10[[2]],type="b",col="red",xlab="Type1 error",ylab="Power")
-lines(statRep_cor10[[4]][,4],statRep_cor10[[2]],type="b",col="blue")
+plot(statRep_glm5[[4]][,4],statRep_glm5[[2]],type="b",col="red",xlab="Type1 error",ylab="Power")
+lines(statRep_cor5[[4]][,4],statRep_cor5[[2]],type="b",col="blue")
 legend("topleft", c("GLM", "COR"), col=c("red", "blue"), lty=1, pch=c(1, 2), cex=0.8, bty="n")
 
 
