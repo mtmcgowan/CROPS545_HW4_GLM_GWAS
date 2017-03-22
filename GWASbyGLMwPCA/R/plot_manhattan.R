@@ -25,7 +25,7 @@ plot_manhattan <- function(mdpSNPinfo, GWASout, error = 0.05) {
   testct <- nrow(manhattan_frame)
 
   # Calculate the Bonferroni cutoff
-  bonferroni <- -log(error/testct)
+  bonferroni <- -log10(error/testct)
 
   # Generate the manhattan plot
   manhattan(manhattan_frame, suggestiveline = FALSE, genomewideline = bonferroni)
