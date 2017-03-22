@@ -4,13 +4,13 @@ row.names(mdpN) <- mdpN_raw[,1]
 
 mdpPheno_raw<-read.table(file="http://zzlab.net/GAPIT/data/CROP545_Phenotype.txt",head=T)
 mdpCov_raw<-read.table(file='http://zzlab.net/GAPIT/data/CROP545_Covariates.txt', head=T)
-
 myGM<-read.table(file="http://zzlab.net/GAPIT/data/mdp_SNP_information.txt",head=T)
 
-source("GWASbyGLM2.R")
-source("GLM.R")
-source("G2P.R")
-source("GWASbyCor.R")
+source("https://raw.githubusercontent.com/mtmcgowan/CROPS545_HW4_GLM_GWAS/master/GWASbyGLM2")
+source('https://raw.githubusercontent.com/mtmcgowan/CROPS545_HW4_GLM_GWAS/master/GWASbyGLMwPCA/R/plot_manhattan.R')
+source('http://zzlab.net/StaGen/R/GLM.R')
+source("http://zzlab.net/StaGen/R/G2P.R")
+source("http://zzlab.net/StaGen/R/GWASbyCor.R")
 
 geno_file<-mdpN[,-1]
 index1to5<-myGM[,2]<6
@@ -29,15 +29,20 @@ m2=length(p.obs)
 p.uni=runif(m2,0,1)
 order.obs=order(p.obs)
 order.uni=order(p.uni)
-plot(-log10(p.uni[order.uni]), -log10(p.obs[order.obs]), 
-     xlab="Expected -log10(p)", ylab="Observed -log10(p)")
+plot(-log10(p.uni[order.uni]), -log10(p.obs[order.obs]),
+     xlab="Expected -log10(p)", ylab="Observed -log10(p)", main = 'Q-Q plot test for GWASbyGLMwPCA')
 abline(a=0, b=1, col="red")
 
 ##Manhattan plot##
 
+# Using the package function
+plot_manhattan(myGM, myGLM)
+
+# Generating it manually using in-class format
 #bonferroni cutoff
 cutoff=0.05
 P.value=myGM
+m = length(myGLM)
 order.SNP=order(P.value)
 bonfcutoff <- cutoff/m
 
@@ -82,7 +87,7 @@ QQ_plot_cor=function(p.obs){
   p.uni=runif(m2,0,1)
   order.obs=order(p.obs)
   order.uni=order(p.uni)
-  plot(-log10(p.uni[order.uni]), -log10(p.obs[order.obs]), 
+  plot(-log10(p.uni[order.uni]), -log10(p.obs[order.obs]),
        xlab="Expected", ylab="Observed",main="QQ plot for GWASbyCor")
   abline(a=0, b=1, col="red")
 }
@@ -91,30 +96,44 @@ QQ_plot_glm=function(p.obs){
   p.uni=runif(m2,0,1)
   order.obs=order(p.obs)
   order.uni=order(p.uni)
-  plot(-log10(p.uni[order.uni]), -log10(p.obs[order.obs]), 
-       xlab="Expected", ylab="Observed",main="QQ plot for GWASbyGLM")
+  plot(-log10(p.uni[order.uni]), -log10(p.obs[order.obs]),
+       xlab="Expected", ylab="Observed",main="QQ plot for GWASbyGLM with PCA")
   abline(a=0, b=1, col="red")
 }
 QQplot_GWASbyCor=QQ_plot_cor(p.obs=myCor)
 QQplot_GWASbyGLM=QQ_plot_glm(p.obs=myGLM_PCA)
 
+# Generating a superimposed Q-Q plot
+p_long <- vector(mode = 'numeric')
+p_long <- append(myCor[order(myCor)], myGLM_PCA[order(myGLM_PCA)])
+u_long <- runif(length(myGLM_PCA), 0,1)
+u_long <- u_long[order(u_long)]
+u_long <- append(u_long, u_long)
+qq_frame <- data.frame(u_long, p_long)
+names(qq_frame) <- c('Expected', 'Observed')
+qq_frame$method <- NA
+qq_frame$method[1:3093] <- 0
+qq_frame$method[3094:6186] <- 1
 
+ggplot(qq_frame, aes(x = 'Expected', y = 'Observed', group = 'method'))
+z <- ggplot(qq_frame, aes(x = -log10(Expected), y = -log10(Observed), color = factor(method)))
+z + geom_point() + geom_abline(intercept = 0, slope = 1, color = 'red')
 
 ##Manhattan plot##
 
 Manhattan_plot_cor=function(p){
-color.vector <- rep(c("deepskyblue","orange","forestgreen","indianred3"),10)
-m=nrow(myGM)
-plot(t(-log10(p))~seq(1:m),col=color.vector[myGM[,2]],main="Plot for GWASbyCor")
-abline(v=mySim$QTN.position, lty = 2, lwd=2, col = "black")
+  color.vector <- rep(c("deepskyblue","orange","forestgreen","indianred3"),10)
+  m=nrow(myGM)
+  plot(t(-log10(p))~seq(1:m),col=color.vector[myGM[,2]],main="Plot for GWASbyCor")
+  abline(v=mySim$QTN.position, lty = 2, lwd=2, col = "black")
 }
 
 
 Manhattan_plot_glm=function(p){
-color.vector <- rep(c("deepskyblue","orange","forestgreen","indianred3"),10)
-m=nrow(myGM)
-plot((-log10(p))~seq(1:m),col=color.vector[myGM[,2]],main="Plot for GWASbyGLM")
-abline(v=mySim$QTN.position, lty = 2, lwd=2, col = "black")
+  color.vector <- rep(c("deepskyblue","orange","forestgreen","indianred3"),10)
+  m=nrow(myGM)
+  plot((-log10(p))~seq(1:m),col=color.vector[myGM[,2]],main="Plot for GWASbyGLM")
+  abline(v=mySim$QTN.position, lty = 2, lwd=2, col = "black")
 }
 Manhattan_cor=Manhattan_plot_cor(p=myCor)##GWASbyCor
 Manhattan_cor=Manhattan_plot_glm(p=myGLM_PCA)###GWASbyGLM
@@ -127,14 +146,14 @@ source("http://www.zzlab.net/GAPIT/gapit_functions.txt")
 
 ##repeat the function, but with the same h2=0.75
 statRep_cor=function(nrep,GM){
-  
+
   stat_cor=replicate(nrep, {
     mySim=G2P(X=X1to5,h2=0.75,alpha=1,NQTN=10,distribution="norm")
     myCor= GWASbyCor(X=mdpN,y=mySim$y)
     seqQTN=mySim$QTN.position
     myGWAS=cbind(myGM,t(myCor),NA)
     myStat_cor=GAPIT.FDR.TypeI(WS=c(1e0,1e3,1e4,1e5), GM=myGM,seqQTN=mySim$QTN.position,GWAS=myGWAS,maxOut=100,MaxBP=1e10)
-    
+
   })}
 
 statRep_glm=function(nrep,GM){
@@ -147,8 +166,8 @@ statRep_glm=function(nrep,GM){
   })
 }
 
-statRep_cor5=statRep_cor(nrep=5,GM=myGM) #repeat 5 times
-statRep_glm5=statRep_glm(nrep=5,GM=myGM) #repeat 5 times,10 times take a long time
+statRep_cor5=statRep_cor(nrep=20,GM=myGM) #repeat 5 times
+statRep_glm5=statRep_glm(nrep=20,GM=myGM) #repeat 5 times,10 times take a long time
 
 ###GLM vs COR in terms of FDR and Power, Type1 error and power
 par(mfrow=c(1,2),mar = c(5,2,5,2))
