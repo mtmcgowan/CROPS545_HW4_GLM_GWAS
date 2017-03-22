@@ -9,7 +9,9 @@ To install this package directly from Github, the 'devtools' package is required
 Here are the R commands to do this:
 
 library(devtools)
+
 install_github('mtmcgowan/CROPS545_HW4_GLM_GWAS/GWASbyGLMwPCA', dependencies = T)
+
 library(GWASbyGLMwPCA)
 
 ## Examples
