@@ -23,7 +23,7 @@ GWASbyGLM<-function(mdpN, mdpPheno, mdpCov, option="cov"){#mdpN=mdp_Numeric.txt;
 		pcaSNP<-princomp(t(mdpN))#runs pca for SNPs
 
 		a<-pcaSNP$sdev^2/sum(pcaSNP$sdev^2)#finds the proportion of the variance explained by each PC
-		n<-length(a[which(a>0.01)])#finds the number of PC's that explain at least 1% of the variance
+		n<-length(a[which(a>0.1)])#finds the number of PC's that explain at least 1% of the variance
 
 		includePCA<-c()
 		for(i in 1:n){
